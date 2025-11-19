@@ -6,6 +6,41 @@ class TestVarasto(unittest.TestCase):
     def setUp(self):
         self.varasto = Varasto(10)
 
+    def test_virheellinen_tilavuus_nollataan(self):
+        varasto = Varasto(-1)
+        self.assertAlmostEqual(varasto.tilavuus, 0.0)
+
+    def test_virheellinen_alku_saldo_nollataan(self):
+        varasto = Varasto(10,-1)
+        self.assertAlmostEqual(varasto.saldo, 0.0)
+
+    def test_virheellinen_lisays_ei_lisaa(self):
+        self.varasto.lisaa_varastoon(-1)
+
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_lisays_liikaa_tayttaa_saldon(self):
+        self.varasto.lisaa_varastoon(11)
+        self.assertAlmostEqual(self.varasto.saldo, 10)
+
+    def test_virheellinen_ottaminen_ei_ota(self):
+        self.varasto.lisaa_varastoon(8)
+
+        saatu_maara = self.varasto.ota_varastosta(-1)
+
+        self.assertAlmostEqual(saatu_maara, 0)
+
+    def test_ottaminen_liikaa_palauttaa_saldon_maaran(self):
+        self.varasto.lisaa_varastoon(8)
+
+        saatu_maara = self.varasto.ota_varastosta(9)
+
+        self.assertAlmostEqual(saatu_maara, 8)
+
+
+    def test_merkkijonoesitys_toimii_oikein(self):
+        self.assertAlmostEqual(str(self.varasto),f"saldo = 0, vielä tilaa 10")
+
     def test_konstruktori_luo_tyhjan_varaston(self):
         # https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertAlmostEqual
         self.assertAlmostEqual(self.varasto.saldo, 0)
